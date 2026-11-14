@@ -151,96 +151,95 @@ footer {
     <p>Student Success Hub | Stay Focused, Keep Growing!</p>
 </footer>
 
+
 <script>
+function saveData() {
+    const getItems = (id) => {
+        return [...document.querySelectorAll("#" + id + " li")].map(li => {
+            const checkbox = li.querySelector("input[type='checkbox']");
+            const button = li.querySelector("button");
+
+            return {
+                text: checkbox
+                    ? li.childNodes[1].textContent.trim()
+                    : li.childNodes[0].textContent.replace(button ? button.textContent : "", "").trim(),
+                checked: checkbox ? checkbox.checked : false
+            };
+        });
+    };
+
+    const data = {
+        tasks: getItems("taskList"),
+        assignments: getItems("assignmentList"),
+        plans: getItems("planList")
+    };
+
+    localStorage.setItem("studentHubData", JSON.stringify(data));
+}
+
+function createItem(text, checked, listId, hasCheckbox) {
+    const li = document.createElement("li");
+
+    if (hasCheckbox) {
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.checked = checked;
+        checkbox.onchange = updateProgress;
+        li.appendChild(checkbox);
+    }
+
+    li.appendChild(document.createTextNode(" " + text + " "));
+
+    const deleteBtn = document.createElement("button");
+    deleteBtn.textContent = "Delete";
+
+    deleteBtn.onclick = function() {
+        li.remove();
+        updateProgress();
+        saveData();
+    };
+
+    li.appendChild(deleteBtn);
+    document.getElementById(listId).appendChild(li);
+}
+
 function addTask() {
     const input = document.getElementById("taskInput");
-
     if (input.value.trim() === "") return;
 
-    const li = document.createElement("li");
-
-    const checkbox = document.createElement("input");
-    checkbox.type = "checkbox";
-    checkbox.onchange = updateProgress;
-
-    const taskText = document.createTextNode(" " + input.value + " ");
-
-    const deleteBtn = document.createElement("button");
-    deleteBtn.textContent = "Delete";
-
-    deleteBtn.onclick = function() {
-        li.remove();
-        updateProgress();
-    };
-
-    li.appendChild(checkbox);
-    li.appendChild(taskText);
-    li.appendChild(deleteBtn);
-
-    document.getElementById("taskList").appendChild(li);
-
+    createItem(input.value.trim(), false, "taskList", true);
     input.value = "";
+    updateProgress();
+    saveData();
 }
-  function addAssignment() {
-    const input = document.getElementById("assignmentInput");
 
+function addAssignment() {
+    const input = document.getElementById("assignmentInput");
     if (input.value.trim() === "") return;
 
-    const li = document.createElement("li");
-
-    const checkbox = document.createElement("input");
-    checkbox.type = "checkbox";
-      checkbox.onchange = updateProgress;
-
-    const text = document.createTextNode(" " + input.value + " ");
-
-    const deleteBtn = document.createElement("button");
-    deleteBtn.textContent = "Delete";
-
-    deleteBtn.onclick = function() {
-        li.remove();
-        updateProgress();
-    };
-
-    li.appendChild(checkbox);
-    li.appendChild(text);
-    li.appendChild(deleteBtn);
-
-    document.getElementById("assignmentList").appendChild(li);
+    createItem(input.value.trim(), false, "assignmentList", true);
     input.value = "";
-  }
-    
+    updateProgress();
+    saveData();
+}
 
 function addPlan() {
     const day = document.getElementById("daySelect").value;
     const input = document.getElementById("planInput");
-
     if (input.value.trim() === "") return;
 
-    const li = document.createElement("li");
-    li.textContent = day + ": " + input.value + " ";
-
-    const deleteBtn = document.createElement("button");
-    deleteBtn.textContent = "Delete";
-
-    deleteBtn.onclick = function() {
-        li.remove();
-    };
-
-    li.appendChild(deleteBtn);
-
-    document.getElementById("planList").appendChild(li);
-
+    createItem(day + ": " + input.value.trim(), false, "planList", false);
     input.value = "";
+    saveData();
 }
+
 function updateProgress() {
-    const taskBoxes = document.querySelectorAll("#taskList input[type='checkbox']");
-    const assignmentBoxes = document.querySelectorAll("#assignmentList input[type='checkbox']");
+    const boxes = document.querySelectorAll(
+        "#taskList input[type='checkbox'], #assignmentList input[type='checkbox']"
+    );
 
-    const allBoxes = [...taskBoxes, ...assignmentBoxes];
-
-    const completed = allBoxes.filter(box => box.checked).length;
-    const total = allBoxes.length;
+    const completed = [...boxes].filter(box => box.checked).length;
+    const total = boxes.length;
 
     const percentage = total === 0 ? 0 : (completed / total) * 100;
 
@@ -248,10 +247,36 @@ function updateProgress() {
         "Tasks & Assignments completed: " + completed + " / " + total;
 
     document.getElementById("progressBar").style.width = percentage + "%";
+
+    saveData();
 }
 
-    
-</script>
+function loadData() {
+    const saved = localStorage.getItem("studentHubData");
+    if (!saved) {
+        updateProgress();
+        return;
+    }
 
+    const data = JSON.parse(saved);
+
+    (data.tasks || []).forEach(item =>
+        createItem(item.text, item.checked, "taskList", true)
+    );
+
+    (data.assignments || []).forEach(item =>
+        createItem(item.text, item.checked, "assignmentList", true)
+    );
+
+    (data.plans || []).forEach(item =>
+        createItem(item.text, false, "planList", false)
+    );
+
+    updateProgress();
+}
+
+window.onload = loadData;
+</script>
+    
 </body>
 </html>
