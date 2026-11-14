@@ -190,6 +190,7 @@ function addTask() {
 
     const checkbox = document.createElement("input");
     checkbox.type = "checkbox";
+      checkbox.onchange = updateProgress;
 
     const text = document.createTextNode(" " + input.value + " ");
 
@@ -198,6 +199,7 @@ function addTask() {
 
     deleteBtn.onclick = function() {
         li.remove();
+        updateProgress();
     };
 
     li.appendChild(checkbox);
@@ -232,13 +234,18 @@ function addPlan() {
     input.value = "";
 }
 function updateProgress() {
-    const boxes = document.querySelectorAll("#taskList input[type='checkbox']");
-    const completed = document.querySelectorAll("#taskList input[type='checkbox']:checked").length;
+    const taskBoxes = document.querySelectorAll("#taskList input[type='checkbox']");
+    const assignmentBoxes = document.querySelectorAll("#assignmentList input[type='checkbox']");
 
-    const percentage = boxes.length === 0 ? 0 : (completed / boxes.length) * 100;
+    const allBoxes = [...taskBoxes, ...assignmentBoxes];
+
+    const completed = allBoxes.filter(box => box.checked).length;
+    const total = allBoxes.length;
+
+    const percentage = total === 0 ? 0 : (completed / total) * 100;
 
     document.getElementById("progressText").textContent =
-        "Tasks completed: " + completed + " / " + boxes.length;
+        "Tasks & Assignments completed: " + completed + " / " + total;
 
     document.getElementById("progressBar").style.width = percentage + "%";
 }
