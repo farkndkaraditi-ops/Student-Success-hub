@@ -145,6 +145,17 @@ footer {
 
 
 <script>
+    function showDate() {
+    const today = new Date();
+
+    document.getElementById("todayDate").textContent =
+        today.toLocaleDateString("en-IN", {
+            weekday: "long",
+            day: "numeric",
+            month: "long",
+            year: "numeric"
+        });
+}
 function saveData() {
     const getItems = (id) => {
         return [...document.querySelectorAll("#" + id + " li")].map(li => {
@@ -268,6 +279,7 @@ function loadData() {
 }
 
 window.onload = loadData;
+    showDate();
 </script>
     
 </body>
