@@ -136,20 +136,35 @@ footer {
 <script>
 function addTask() {
     const input = document.getElementById("taskInput");
+
     if (input.value.trim() === "") return;
 
     const li = document.createElement("li");
+
     const checkbox = document.createElement("input");
     checkbox.type = "checkbox";
-
     checkbox.onchange = updateProgress;
 
+    const taskText = document.createTextNode(" " + input.value + " ");
+
+    const deleteBtn = document.createElement("button");
+    deleteBtn.textContent = "Delete";
+
+    deleteBtn.onclick = function() {
+        li.remove();
+        updateProgress();
+    };
+
     li.appendChild(checkbox);
-    li.appendChild(document.createTextNode(" " + input.value));
+    li.appendChild(taskText);
+    li.appendChild(deleteBtn);
 
     document.getElementById("taskList").appendChild(li);
+
     input.value = "";
 }
+    
+    
 
 function addAssignment() {
     const input = document.getElementById("assignmentInput");
@@ -161,10 +176,9 @@ function addAssignment() {
     document.getElementById("assignmentList").appendChild(li);
     input.value = "";
 }
-
 function updateProgress() {
-    const boxes = document.querySelectorAll("#taskList input");
-    const completed = document.querySelectorAll("#taskList input:checked").length;
+    const boxes = document.querySelectorAll("#taskList input[type='checkbox']");
+    const completed = document.querySelectorAll("#taskList input[type='checkbox']:checked").length;
 
     const percentage = boxes.length === 0 ? 0 : (completed / boxes.length) * 100;
 
@@ -173,6 +187,8 @@ function updateProgress() {
 
     document.getElementById("progressBar").style.width = percentage + "%";
 }
+
+    
 </script>
 
 </body>
