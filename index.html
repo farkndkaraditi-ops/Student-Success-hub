@@ -110,12 +110,23 @@ footer {
         </div>
 
         <div class="card">
-            <h2>📅 Weekly Planner</h2>
-            <p>Monday - Mathematics</p>
-            <p>Tuesday - Programming</p>
-            <p>Wednesday - Physics</p>
-            <p>Thursday - Engineering</p>
-            <p>Friday - Revision</p>
+    <h2>📅 Weekly Planner</h2>
+
+    <select id="daySelect">
+        <option>Monday</option>
+        <option>Tuesday</option>
+        <option>Wednesday</option>
+        <option>Thursday</option>
+        <option>Friday</option>
+        <option>Saturday</option>
+        <option>Sunday</option>
+    </select>
+
+    <input id="planInput" placeholder="Enter study plan">
+
+    <button onclick="addPlan()">Add Plan</button>
+
+    <ul id="planList"></ul>
         </div>
 
         <div class="card">
@@ -163,17 +174,54 @@ function addTask() {
 
     input.value = "";
 }
-    
-    
-
-function addAssignment() {
+  function addAssignment() {
     const input = document.getElementById("assignmentInput");
+
     if (input.value.trim() === "") return;
 
     const li = document.createElement("li");
-    li.textContent = input.value;
+
+    const checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+
+    const text = document.createTextNode(" " + input.value + " ");
+
+    const deleteBtn = document.createElement("button");
+    deleteBtn.textContent = "Delete";
+
+    deleteBtn.onclick = function() {
+        li.remove();
+    };
+
+    li.appendChild(checkbox);
+    li.appendChild(text);
+    li.appendChild(deleteBtn);
 
     document.getElementById("assignmentList").appendChild(li);
+    input.value = "";
+}  
+    
+
+function addPlan() {
+    const day = document.getElementById("daySelect").value;
+    const input = document.getElementById("planInput");
+
+    if (input.value.trim() === "") return;
+
+    const li = document.createElement("li");
+    li.textContent = day + ": " + input.value + " ";
+
+    const deleteBtn = document.createElement("button");
+    deleteBtn.textContent = "Delete";
+
+    deleteBtn.onclick = function() {
+        li.remove();
+    };
+
+    li.appendChild(deleteBtn);
+
+    document.getElementById("planList").appendChild(li);
+
     input.value = "";
 }
 function updateProgress() {
