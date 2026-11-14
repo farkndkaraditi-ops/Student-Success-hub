@@ -129,6 +129,13 @@ footer {
     <ul id="planList"></ul>
         </div>
 
+    <input id="planInput" placeholder="Enter study plan">
+
+    <button onclick="addPlan()">Add Plan</button>
+
+    <ul id="planList"></ul>
+        </div>
+
         <div class="card">
             <h2>📊 Progress</h2>
             <p id="progressText">Tasks completed: 0</p>
@@ -199,7 +206,7 @@ function addTask() {
 
     document.getElementById("assignmentList").appendChild(li);
     input.value = "";
-}  
+  }
     
 
 function addPlan() {
