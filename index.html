@@ -1,0 +1,179 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student Success Hub</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f4f6fb;
+    color: #263248;
+}
+header {
+    background: #263b80;
+    color: white;
+    padding: 25px;
+    text-align: center;
+}
+.container {
+    max-width: 1000px;
+    margin: 30px auto;
+    padding: 15px;
+}
+.welcome {
+    margin-bottom: 25px;
+}
+.cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    gap: 20px;
+}
+.card {
+    background: white;
+    padding: 22px;
+    border-radius: 12px;
+    box-shadow: 0 3px 12px #00000012;
+}
+.card h2 {
+    color: #263b80;
+    font-size: 20px;
+}
+input, button {
+    padding: 10px;
+    margin-top: 8px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
+button {
+    background: #263b80;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+li {
+    margin: 10px 0;
+}
+.progress {
+    background: #e5e8f2;
+    height: 12px;
+    border-radius: 10px;
+}
+.bar {
+    width: 0%;
+    height: 12px;
+    background: #4caf82;
+    border-radius: 10px;
+}
+footer {
+    text-align: center;
+    padding: 20px;
+    color: #777;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>Student Success Hub</h1>
+    <p>Plan Better • Study Smarter • Achieve More</p>
+</header>
+
+<div class="container">
+
+    <div class="welcome">
+        <h2>Welcome, Student!</h2>
+        <p>Organize your studies and track your daily progress.</p>
+    </div>
+
+    <div class="cards">
+
+        <div class="card">
+            <h2>📚 Study Tasks</h2>
+            <input id="taskInput" placeholder="Enter a study task">
+            <button onclick="addTask()">Add Task</button>
+            <ul id="taskList"></ul>
+        </div>
+
+        <div class="card">
+            <h2>📝 Assignments</h2>
+            <input id="assignmentInput" placeholder="Enter assignment">
+            <button onclick="addAssignment()">Add Assignment</button>
+            <ul id="assignmentList"></ul>
+        </div>
+
+        <div class="card">
+            <h2>📅 Weekly Planner</h2>
+            <p>Monday - Mathematics</p>
+            <p>Tuesday - Programming</p>
+            <p>Wednesday - Physics</p>
+            <p>Thursday - Engineering</p>
+            <p>Friday - Revision</p>
+        </div>
+
+        <div class="card">
+            <h2>📊 Progress</h2>
+            <p id="progressText">Tasks completed: 0</p>
+            <div class="progress">
+                <div class="bar" id="progressBar"></div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<footer>
+    <p>Student Success Hub | Stay Focused, Keep Growing!</p>
+</footer>
+
+<script>
+function addTask() {
+    const input = document.getElementById("taskInput");
+    if (input.value.trim() === "") return;
+
+    const li = document.createElement("li");
+    const checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+
+    checkbox.onchange = updateProgress;
+
+    li.appendChild(checkbox);
+    li.appendChild(document.createTextNode(" " + input.value));
+
+    document.getElementById("taskList").appendChild(li);
+    input.value = "";
+}
+
+function addAssignment() {
+    const input = document.getElementById("assignmentInput");
+    if (input.value.trim() === "") return;
+
+    const li = document.createElement("li");
+    li.textContent = input.value;
+
+    document.getElementById("assignmentList").appendChild(li);
+    input.value = "";
+}
+
+function updateProgress() {
+    const boxes = document.querySelectorAll("#taskList input");
+    const completed = document.querySelectorAll("#taskList input:checked").length;
+
+    const percentage = boxes.length === 0 ? 0 : (completed / boxes.length) * 100;
+
+    document.getElementById("progressText").textContent =
+        "Tasks completed: " + completed + " / " + boxes.length;
+
+    document.getElementById("progressBar").style.width = percentage + "%";
+}
+</script>
+
+</body>
+</html>
